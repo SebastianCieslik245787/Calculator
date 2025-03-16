@@ -131,12 +131,12 @@ class MainActivity : AppCompatActivity() {
     private fun countResult(): String {
         while (true) {
             if (splitData.size == 1) break
-            var isCounted: Boolean = false
+            var isCounted = false
             for (i in splitData.indices) {
                 if (splitData[i] == "*" || splitData[i] == "/") {
-                    var previousValue: Double = splitData[i - 1].toDouble()
-                    var nextValue: Double = splitData[i + 1].toDouble()
-                    var result: Double = if (splitData[i] == "*") previousValue * nextValue
+                    val previousValue: Double = splitData[i - 1].toDouble()
+                    val nextValue: Double = splitData[i + 1].toDouble()
+                    val result: Double = if (splitData[i] == "*") previousValue * nextValue
                     else previousValue / nextValue
                     splitData = splitData.toMutableList().apply {
                         removeAt(i + 1)
@@ -150,9 +150,9 @@ class MainActivity : AppCompatActivity() {
             if (!isCounted) {
                 for (i in splitData.indices) {
                     if (splitData[i] == "+" || splitData[i] == "-") {
-                        var previousValue: Double = splitData[i - 1].toDouble()
-                        var nextValue: Double = splitData[i + 1].toDouble()
-                        var result: Double = if (splitData[i] == "+") previousValue + nextValue
+                        val previousValue: Double = splitData[i - 1].toDouble()
+                        val nextValue: Double = splitData[i + 1].toDouble()
+                        val result: Double = if (splitData[i] == "+") previousValue + nextValue
                         else previousValue - nextValue
                         splitData = splitData.toMutableList().apply {
                             removeAt(i + 1)
