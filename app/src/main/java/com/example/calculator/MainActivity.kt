@@ -8,7 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    lateinit var splittedData: List<String>
+    private var isDotExistInNumber: Boolean = false
+    private lateinit var splitData: List<String>
     private lateinit var buttonClear: Button
     private lateinit var buttonDelete: Button
     private lateinit var buttonDivide: Button
@@ -51,7 +52,8 @@ class MainActivity : AppCompatActivity() {
         buttonDivide.setOnClickListener { addSignToResultView(" / ") }
         buttonMultiply.setOnClickListener { addSignToResultView(" * ") }
         buttonResult.setOnClickListener {
-            if (validateData()) resultView.text = resultView.text.toString() + "\n= " + countResult()
+            if (validateData()) resultView.text =
+                resultView.text.toString() + "\n= " + countResult()
         }
         buttonDelete.setOnClickListener {
             if (resultView.text.length == 1) resultView.text = "0"
@@ -63,7 +65,9 @@ class MainActivity : AppCompatActivity() {
         }
         buttonClear.setOnClickListener { resultView.text = "0" }
         buttonDot.setOnClickListener {
-            if(isLastSignNumber()) addSignToResultView(".")
+            if (!isDotExistInNumber && isLastSignNumber()) {
+                addSignToResultView(".")
+            }
         }
     }
 
@@ -95,7 +99,10 @@ class MainActivity : AppCompatActivity() {
             resultView.text = sign
             return
         }
+        if (sign == ".") isDotExistInNumber = true
+        else if(!(sign >= "0" && sign <= "9")) isDotExistInNumber = false
         resultView.text = resultView.text.toString() + sign
+
     }
 
     private fun isLastSignNumber(): Boolean {
@@ -111,9 +118,9 @@ class MainActivity : AppCompatActivity() {
             displayToast("Obliczenia nie mogą kończyć się operacją bądz przecinkiem!!")
             return false
         }
-        splittedData = resultView.text.split(" ")
-        for (i in splittedData.indices) {
-            if (splittedData[i] == "/" && splittedData[i + 1].toDouble() == 0.0) {
+        splitData = resultView.text.split(" ")
+        for (i in splitData.indices) {
+            if (splitData[i] == "/" && splitData[i + 1].toDouble() == 0.0) {
                 displayToast("W obliczeniach znajduje się zabronione dzielenie przez 0!!")
                 return false
             }
@@ -123,15 +130,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun countResult(): String {
         while (true) {
-            if(splittedData.size == 1) break
+            if (splitData.size == 1) break
             var isCounted: Boolean = false
-            for (i in splittedData.indices) {
-                if (splittedData[i] == "*" || splittedData[i] == "/") {
-                    var previousValue: Double = splittedData[i - 1].toDouble()
-                    var nextValue: Double = splittedData[i + 1].toDouble()
-                    var result: Double = if (splittedData[i] == "*") previousValue * nextValue
+            for (i in splitData.indices) {
+                if (splitData[i] == "*" || splitData[i] == "/") {
+                    var previousValue: Double = splitData[i - 1].toDouble()
+                    var nextValue: Double = splitData[i + 1].toDouble()
+                    var result: Double = if (splitData[i] == "*") previousValue * nextValue
                     else previousValue / nextValue
-                    splittedData = splittedData.toMutableList().apply {
+                    splitData = splitData.toMutableList().apply {
                         removeAt(i + 1)
                         removeAt(i)
                         set(i - 1, result.toString())
@@ -141,13 +148,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (!isCounted) {
-                for (i in splittedData.indices) {
-                    if (splittedData[i] == "+" || splittedData[i] == "-") {
-                        var previousValue: Double = splittedData[i - 1].toDouble()
-                        var nextValue: Double = splittedData[i + 1].toDouble()
-                        var result: Double = if (splittedData[i] == "+") previousValue + nextValue
+                for (i in splitData.indices) {
+                    if (splitData[i] == "+" || splitData[i] == "-") {
+                        var previousValue: Double = splitData[i - 1].toDouble()
+                        var nextValue: Double = splitData[i + 1].toDouble()
+                        var result: Double = if (splitData[i] == "+") previousValue + nextValue
                         else previousValue - nextValue
-                        splittedData = splittedData.toMutableList().apply {
+                        splitData = splitData.toMutableList().apply {
                             removeAt(i + 1)
                             removeAt(i)
                             set(i - 1, result.toString())
@@ -157,6 +164,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return splittedData[0]
+        return splitData[0]
     }
 }
