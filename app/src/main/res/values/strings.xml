@@ -18,4 +18,9 @@
     <string name="result">=</string>
     <string name="_0">0</string>
     <string name="dot">.</string>
+    <string name="changeSign">±</string>
+    <string name="easy_calculator">Prosty Kalkulator</string>
+    <string name="advanced_calculator">Zaawansowany Kalkulator</string>
+    <string name="author">Autor</string>
+    <string name="exit">Wyjście</string>
 </resources>
