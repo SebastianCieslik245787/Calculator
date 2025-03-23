@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="button">
+        <item name="android:layout_width">@dimen/buttonWidth</item>
+        <item name="android:layout_height">@dimen/buttonHeight</item>
+        <item name="android:layout_margin">@dimen/buttonMargin</item>
+        <item name="android:textSize">@dimen/buttonTextSize</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
+    </style>
+
+    <style name="buttonNumber" parent="button">
+        <item name="backgroundTint">@color/buttonNumberColor</item>
+    </style>
+
+    <style name="buttonOperator" parent="button">
+        <item name="backgroundTint">@color/buttonOperationColor</item>
+    </style>
+
+    <style name="buttonResult" parent="button">
+        <item name="android:backgroundTint">@color/buttonResultColor</item>
+        <item name="android:layout_height">@dimen/buttonResultHeight</item>
+    </style>
+</resources>

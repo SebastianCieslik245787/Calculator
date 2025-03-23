@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class EasyCalcActivity : AppCompatActivity() {
     private var isDotExistInNumber: Boolean = false
+    private var isOperationLast: Boolean = false
     private lateinit var splitData: List<String>
     private lateinit var buttonClear: Button
     private lateinit var buttonDelete: Button
@@ -101,10 +102,21 @@ class EasyCalcActivity : AppCompatActivity() {
             resultView.text = sign
             return
         }
-        if (sign == ".") isDotExistInNumber = true
-        else if(!(sign >= "0" && sign <= "9")) isDotExistInNumber = false
-        resultView.text = resultView.text.toString() + sign
-
+        if(sign >= "0" && sign <= "9"){
+            resultView.text = resultView.text.toString() + sign
+            isOperationLast = false
+        }
+        else if(sign == "." && !isDotExistInNumber){
+            isDotExistInNumber = true
+            resultView.text = resultView.text.toString() + sign
+        }
+        else{
+            if(!isOperationLast){
+                isDotExistInNumber = false
+                resultView.text = resultView.text.toString() + sign
+                isOperationLast = true
+            }
+        }
     }
 
     private fun isLastSignNumber(): Boolean {
