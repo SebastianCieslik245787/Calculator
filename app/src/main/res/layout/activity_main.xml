@@ -25,30 +25,22 @@
 
         <Button
             android:id="@+id/buttonEasyCalc"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
+            style="@style/buttonMainLayout"
             android:text="@string/easy_calculator"
             />
         <Button
             android:id="@+id/buttonAdvanced"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
+            style="@style/buttonMainLayout"
             android:text="@string/advanced_calculator"
             />
         <Button
             android:id="@+id/buttonAboutMe"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
+            style="@style/buttonMainLayout"
             android:text="@string/author"
             />
         <Button
             android:id="@+id/buttonExit"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
+            style="@style/buttonMainLayout"
             android:text="@string/exit"
             />
         

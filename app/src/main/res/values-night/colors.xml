@@ -2,6 +2,7 @@
 <resources>
     <color name="backgroundColor">#393939</color>
     <color name="buttonNumberColor">#302C2C</color>
+    <color name="buttonMainLayout">#302C2C</color>
     <color name="buttonOperationColor">#0B234D</color>
     <color name="buttonResultColor">#D77400</color>
     <color name="buttonTextColor">#D6D6D6</color>

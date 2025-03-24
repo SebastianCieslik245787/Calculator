@@ -21,6 +21,17 @@
 
     <style name="buttonResult" parent="button">
         <item name="android:backgroundTint">@color/buttonResultColor</item>
-        <item name="android:layout_height">@dimen/buttonResultHeight</item>
+        <item name="android:layout_height">@dimen/buttonHeight</item>
+    </style>
+    <style name="buttonMainLayout">
+        <item name="android:layout_height">@dimen/buttonHeight</item>
+        <item name="android:layout_width">@dimen/buttonWidth</item>
+        <item name="android:layout_marginTop">@dimen/buttonMainLayoutMargin</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:textSize">@dimen/buttonMainLayoutTextSize</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="backgroundTint">@color/buttonMainLayout</item>
     </style>
 </resources>
