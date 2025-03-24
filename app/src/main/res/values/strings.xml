@@ -32,4 +32,5 @@
     <string name="cos">cos</string>
     <string name="tan">tan</string>
     <string name="percent">%</string>
+    <string name="brackets">()</string>
 </resources>

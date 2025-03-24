@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="buttonAdvancedCalc" parent="button">
+        <item name="android:textSize">@dimen/buttonAdvancedCalcTextSize</item>
+    </style>
+
+    <style name="buttonNumberAdvancedCalc" parent="buttonAdvancedCalc">
+        <item name="backgroundTint">@color/buttonNumberColor</item>
+    </style>
+
+    <style name="buttonOperatorAdvancedCalc" parent="buttonAdvancedCalc">
+        <item name="backgroundTint">@color/buttonOperationColor</item>
+    </style>
+
+    <style name="buttonResultAdvancedCalc" parent="buttonAdvancedCalc">
+        <item name="android:backgroundTint">@color/buttonResultColor</item>
+    </style>
+
+    <style name="buttonOperationSmallerTextSize" parent="buttonOperatorAdvancedCalc">
+        <item name="android:textSize">@dimen/buttonAdvancedCalcSmallerTextSize</item>
+    </style>
+</resources>

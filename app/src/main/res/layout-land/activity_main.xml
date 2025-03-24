@@ -25,22 +25,22 @@
 
         <Button
             android:id="@+id/buttonEasyCalc"
-            style="@style/buttonMainLayout"
+            style="@style/buttonMain"
             android:text="@string/easy_calculator"
             />
         <Button
             android:id="@+id/buttonAdvanced"
-            style="@style/buttonMainLayout"
+            style="@style/buttonMain"
             android:text="@string/advanced_calculator"
             />
         <Button
             android:id="@+id/buttonAboutMe"
-            style="@style/buttonMainLayout"
+            style="@style/buttonMain"
             android:text="@string/author"
             />
         <Button
             android:id="@+id/buttonExit"
-            style="@style/buttonMainLayout"
+            style="@style/buttonMain"
             android:text="@string/exit"
             />
 

@@ -8,4 +8,6 @@
     <dimen name="resultTextSize">35sp</dimen>
     <dimen name="buttonMainLayoutMargin">10dp</dimen>
     <dimen name="buttonMainLayoutTextSize">18sp</dimen>
+    <dimen name="buttonAdvancedCalcTextSize">18sp</dimen>
+    <dimen name="buttonAdvancedCalcSmallerTextSize">14sp</dimen>
 </resources>

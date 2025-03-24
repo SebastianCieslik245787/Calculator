@@ -23,7 +23,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        buttonAdvancedCalc.setOnClickListener {  }
+        buttonAdvancedCalc.setOnClickListener {
+            val intent = Intent(this, AdvancedCalcActivity::class.java)
+            startActivity(intent)
+        }
         buttonAboutMe.setOnClickListener {  }
         buttonExit.setOnClickListener {
             finishAffinity()
