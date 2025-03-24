@@ -2,6 +2,7 @@ package com.example.calculator
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -94,6 +95,7 @@ class EasyCalcActivity : AppCompatActivity() {
         buttonDot = findViewById(R.id.buttonDot)
         buttonSign = findViewById(R.id.buttonSign)
         resultView = findViewById(R.id.resultField)
+        resultView.movementMethod = ScrollingMovementMethod()
     }
 
     @SuppressLint("SetTextI18n")

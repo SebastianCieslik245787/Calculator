@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="backgroundColor">#3C3B3B</color>
-    <color name="buttonNumberColor">#423F3F</color>
-    <color name="buttonOperationColor">#15325D</color>
-    <color name="buttonResultColor">#5D3006</color>
-    <color name="buttonTextColor">#BAB7B7</color>
+    <color name="backgroundColor">#393939</color>
+    <color name="buttonNumberColor">#302C2C</color>
+    <color name="buttonOperationColor">#0B234D</color>
+    <color name="buttonResultColor">#D77400</color>
+    <color name="buttonTextColor">#D6D6D6</color>
 </resources>

@@ -6,6 +6,9 @@
         <item name="android:layout_margin">@dimen/buttonMargin</item>
         <item name="android:textSize">@dimen/buttonTextSize</item>
         <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
     </style>
 
     <style name="buttonNumber" parent="button">
