@@ -6,10 +6,14 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.collections.toMutableList
 
 class EasyCalcActivity : AppCompatActivity() {
     private var isDotExistInNumber: Boolean = false
+    private var isResultPressed: Boolean = false
     private var isOperationLast: Boolean = false
+    private var isNegativeLastNumber: Boolean = false
+    private var startOfNumber: Int = 0
     private lateinit var splitData: List<String>
     private lateinit var buttonClear: Button
     private lateinit var buttonDelete: Button
@@ -37,7 +41,6 @@ class EasyCalcActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.easy_calculator)
         setLayoutObjects()
-
         resultView.text = "0"
         buttonZero.setOnClickListener { addSignToResultView("0") }
         buttonOne.setOnClickListener { addSignToResultView("1") }
@@ -54,8 +57,9 @@ class EasyCalcActivity : AppCompatActivity() {
         buttonDivide.setOnClickListener { addSignToResultView(" / ") }
         buttonMultiply.setOnClickListener { addSignToResultView(" * ") }
         buttonResult.setOnClickListener {
-            if (validateData()) resultView.text =
+            if (!isResultPressed && validateData()) resultView.text =
                 resultView.text.toString() + "\n= " + countResult()
+            isResultPressed = true
         }
         buttonDelete.setOnClickListener {
             if (resultView.text.length == 1) resultView.text = "0"
@@ -69,6 +73,16 @@ class EasyCalcActivity : AppCompatActivity() {
         buttonDot.setOnClickListener {
             if (!isDotExistInNumber && isLastSignNumber()) {
                 addSignToResultView(".")
+            }
+        }
+        buttonSign.setOnClickListener {
+            if(isNegativeLastNumber){
+                resultView.text = resultView.text.substring(0, startOfNumber) + resultView.text.substring(startOfNumber + 2, resultView.text.length)
+                isNegativeLastNumber = false
+            }
+            else if(resultView.text.length-1 != startOfNumber){
+                isNegativeLastNumber = true
+                resultView.text = StringBuilder(resultView.text).insert(startOfNumber, "(-").toString()
             }
         }
     }
@@ -98,7 +112,11 @@ class EasyCalcActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun addSignToResultView(sign: String) {
-        if (resultView.text.length == 1 && resultView.text == "0" && (sign >= "0" && sign <= "9")) {
+        if(isResultPressed){
+            resultView.text = ""
+            isResultPressed = false
+        }
+        if (resultView.text.length <= 1 && resultView.text == "0" && (sign >= "0" && sign <= "9")) {
             resultView.text = sign
             return
         }
@@ -112,9 +130,11 @@ class EasyCalcActivity : AppCompatActivity() {
         }
         else{
             if(!isOperationLast){
+                if(isNegativeLastNumber) resultView.text = resultView.text.toString() + ")"
                 isDotExistInNumber = false
                 resultView.text = resultView.text.toString() + sign
                 isOperationLast = true
+                startOfNumber = resultView.text.length-1
             }
         }
     }
