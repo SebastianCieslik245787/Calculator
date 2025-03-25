@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlin.collections.toMutableList
+import com.notkamui.keval.Keval
 
 class EasyCalcActivity : AppCompatActivity() {
     private var isDotExistInNumber: Boolean = false
@@ -163,41 +163,6 @@ class EasyCalcActivity : AppCompatActivity() {
     }
 
     private fun countResult(): String {
-        while (true) {
-            if (splitData.size == 1) break
-            var isCounted = false
-            for (i in splitData.indices) {
-                if (splitData[i] == "*" || splitData[i] == "/") {
-                    val previousValue: Double = splitData[i - 1].toDouble()
-                    val nextValue: Double = splitData[i + 1].toDouble()
-                    val result: Double = if (splitData[i] == "*") previousValue * nextValue
-                    else previousValue / nextValue
-                    splitData = splitData.toMutableList().apply {
-                        removeAt(i + 1)
-                        removeAt(i)
-                        set(i - 1, result.toString())
-                    }
-                    isCounted = true
-                    break
-                }
-            }
-            if (!isCounted) {
-                for (i in splitData.indices) {
-                    if (splitData[i] == "+" || splitData[i] == "-") {
-                        val previousValue: Double = splitData[i - 1].toDouble()
-                        val nextValue: Double = splitData[i + 1].toDouble()
-                        val result: Double = if (splitData[i] == "+") previousValue + nextValue
-                        else previousValue - nextValue
-                        splitData = splitData.toMutableList().apply {
-                            removeAt(i + 1)
-                            removeAt(i)
-                            set(i - 1, result.toString())
-                        }
-                        break
-                    }
-                }
-            }
-        }
-        return splitData[0]
+        return Keval.eval(resultView.text.toString()).toString()
     }
 }

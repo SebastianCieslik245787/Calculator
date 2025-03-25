@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("com.notkamui.libs:keval:1.1.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
