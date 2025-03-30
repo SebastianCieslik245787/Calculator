@@ -17,6 +17,7 @@
         android:layout_margin="@dimen/resultTextViewMargin"
         android:textSize="@dimen/resultTextSize"
 
+        app:layout_constraintBottom_toTopOf="@+id/buttonsGrid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
