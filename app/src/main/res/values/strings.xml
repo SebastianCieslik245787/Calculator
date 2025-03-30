@@ -33,4 +33,5 @@
     <string name="tan">tan</string>
     <string name="percent">%</string>
     <string name="brackets">()</string>
+    <string name="about_me">Nazywam się Sebastian Cieślik, jestem na 3 roku studiów, na kierunku Informatyka na Politechnice Łódźkiej.\n To jest moja pierwsza aplikacja mobilna. :)</string>
 </resources>

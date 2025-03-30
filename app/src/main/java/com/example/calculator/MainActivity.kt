@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var buttonEasyCalc : Button
     private lateinit var buttonAdvancedCalc : Button
     private lateinit var buttonAboutMe : Button
@@ -27,7 +26,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AdvancedCalcActivity::class.java)
             startActivity(intent)
         }
-        buttonAboutMe.setOnClickListener {  }
+        buttonAboutMe.setOnClickListener {
+            val intent = Intent(this, AboutMe::class.java)
+            startActivity(intent)
+        }
         buttonExit.setOnClickListener {
             finishAffinity()
             exitProcess(0)
