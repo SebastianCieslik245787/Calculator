@@ -2,19 +2,20 @@ package com.example.calculator
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.notkamui.keval.Keval
 
 class EasyCalcActivity : AppCompatActivity() {
-    private var isDotExistInNumber: Boolean = false
-    private var isResultPressed: Boolean = false
-    private var isOperationLast: Boolean = false
-    private var isNegativeLastNumber: Boolean = false
-    private var startOfNumber: Int = 0
-    private lateinit var splitData: List<String>
+    private var isResultShown : Boolean = false
+    private lateinit var gestureDetector: GestureDetector
+    private val handler = Handler(Looper.getMainLooper())
+    private var isDoubleClick = false
+
     private lateinit var buttonClear: Button
     private lateinit var buttonDelete: Button
     private lateinit var buttonDivide: Button
@@ -36,58 +37,85 @@ class EasyCalcActivity : AppCompatActivity() {
     private lateinit var buttonSign: Button
     private lateinit var resultView: TextView
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.easy_calculator)
+
         setLayoutObjects()
-        resultView.text = "0"
-        buttonZero.setOnClickListener { addSignToResultView("0") }
-        buttonOne.setOnClickListener { addSignToResultView("1") }
-        buttonTwo.setOnClickListener { addSignToResultView("2") }
-        buttonThree.setOnClickListener { addSignToResultView("3") }
-        buttonFour.setOnClickListener { addSignToResultView("4") }
-        buttonFive.setOnClickListener { addSignToResultView("5") }
-        buttonSix.setOnClickListener { addSignToResultView("6") }
-        buttonSeven.setOnClickListener { addSignToResultView("7") }
-        buttonEight.setOnClickListener { addSignToResultView("8") }
-        buttonNine.setOnClickListener { addSignToResultView("9") }
-        buttonAdd.setOnClickListener { addSignToResultView(" + ") }
-        buttonSubtract.setOnClickListener { addSignToResultView(" - ") }
-        buttonDivide.setOnClickListener { addSignToResultView(" / ") }
-        buttonMultiply.setOnClickListener { addSignToResultView(" * ") }
+
+        gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                isDoubleClick = false
+                handler.postDelayed({
+                    if (!isDoubleClick) {
+                        resultView.text = ExpressionOperations.dropLastElement()
+                    }
+                }, 150)
+                return true
+            }
+
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                isDoubleClick = true
+                resultView.text = ExpressionOperations.deleteExpression()
+                return true
+            }
+        })
+
+        resultView.text = ExpressionOperations.getExpression()
+
+        buttonZero.setOnClickListener { buttonAction("0") }
+
+        buttonOne.setOnClickListener { buttonAction("1") }
+
+        buttonTwo.setOnClickListener { buttonAction("2") }
+
+        buttonThree.setOnClickListener { buttonAction("3") }
+
+        buttonFour.setOnClickListener { buttonAction("4") }
+
+        buttonFive.setOnClickListener { buttonAction("5") }
+
+        buttonSix.setOnClickListener { buttonAction("6") }
+
+        buttonSeven.setOnClickListener { buttonAction("7") }
+
+        buttonEight.setOnClickListener { buttonAction("8") }
+
+        buttonNine.setOnClickListener { buttonAction("9") }
+
+        buttonAdd.setOnClickListener { buttonAction("+") }
+
+        buttonSubtract.setOnClickListener { buttonAction("-") }
+
+        buttonDivide.setOnClickListener { buttonAction("/") }
+
+        buttonMultiply.setOnClickListener { buttonAction("*") }
+
         buttonResult.setOnClickListener {
-            if (!isResultPressed && validateData()) resultView.text =
-                resultView.text.toString() + "\n= " + countResult()
-            isResultPressed = true
-        }
-        buttonDelete.setOnClickListener {
-            if (resultView.text.length == 1) resultView.text = "0"
-            else {
-                if (!isLastSignNumber()) resultView.text =
-                    resultView.text.substring(0, resultView.text.length - 3)
-                else resultView.text = resultView.text.substring(0, resultView.text.length - 1)
+
+            if(!isResultShown && ExpressionOperations.validateData(this)){
+
+                resultView.text = ExpressionOperations.calculateExpression()
+                isResultShown = true
             }
         }
-        buttonClear.setOnClickListener { resultView.text = "0" }
-        buttonDot.setOnClickListener {
-            if (!isDotExistInNumber && isLastSignNumber()) {
-                addSignToResultView(".")
-            }
+
+        buttonDelete.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
         }
-        buttonSign.setOnClickListener {
-            if(isNegativeLastNumber){
-                resultView.text = resultView.text.substring(0, startOfNumber) + resultView.text.substring(startOfNumber + 2, resultView.text.length)
-                isNegativeLastNumber = false
-            }
-            else if(resultView.text.length-1 != startOfNumber){
-                isNegativeLastNumber = true
-                resultView.text = StringBuilder(resultView.text).insert(startOfNumber, "(-").toString()
-            }
-        }
+
+        buttonClear.setOnClickListener { resultView.text = ExpressionOperations.deleteExpression() }
+
+        buttonDot.setOnClickListener { buttonAction(".") }
+
+        buttonSign.setOnClickListener { buttonAction("-1") }
     }
 
     private fun setLayoutObjects() {
+
         buttonZero = findViewById(R.id.buttonZero)
         buttonOne = findViewById(R.id.buttonOne)
         buttonTwo = findViewById(R.id.buttonTwo)
@@ -108,61 +136,14 @@ class EasyCalcActivity : AppCompatActivity() {
         buttonDot = findViewById(R.id.buttonDot)
         buttonSign = findViewById(R.id.buttonSign)
         resultView = findViewById(R.id.resultField)
+
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun addSignToResultView(sign: String) {
-        if(isResultPressed){
-            resultView.text = ""
-            isResultPressed = false
-        }
-        if (resultView.text.length <= 1 && resultView.text == "0" && (sign >= "0" && sign <= "9")) {
-            resultView.text = sign
-            return
-        }
-        if(sign >= "0" && sign <= "9"){
-            resultView.text = resultView.text.toString() + sign
-            isOperationLast = false
-        }
-        else if(sign == "." && !isDotExistInNumber){
-            isDotExistInNumber = true
-            resultView.text = resultView.text.toString() + sign
-        }
-        else{
-            if(!isOperationLast){
-                if(isNegativeLastNumber) resultView.text = resultView.text.toString() + ")"
-                isDotExistInNumber = false
-                resultView.text = resultView.text.toString() + sign
-                isOperationLast = true
-                startOfNumber = resultView.text.length-1
-            }
-        }
-    }
+    fun buttonAction(element : String){
+        if(isResultShown) ExpressionOperations.deleteExpression()
 
-    private fun isLastSignNumber(): Boolean {
-        return ((resultView.text.last() in '0'..'9'))
-    }
+        isResultShown = false
 
-    private fun displayToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun validateData(): Boolean {
-        if (!isLastSignNumber() || resultView.text.last() == '.') {
-            displayToast("Obliczenia nie mogą kończyć się operacją bądz przecinkiem!!")
-            return false
-        }
-        splitData = resultView.text.split(" ")
-        for (i in splitData.indices) {
-            if (splitData[i] == "/" && splitData[i + 1].toDouble() == 0.0) {
-                displayToast("W obliczeniach znajduje się zabronione dzielenie przez 0!!")
-                return false
-            }
-        }
-        return true
-    }
-
-    private fun countResult(): String {
-        return Keval.eval(resultView.text.toString()).toString()
+        resultView.text = ExpressionOperations.addToExpression(this, element)
     }
 }
