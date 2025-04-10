@@ -15,7 +15,10 @@
         android:layout_height="0dp"
         android:gravity="end|bottom"
         android:layout_margin="@dimen/resultTextViewMargin"
-        android:textSize="@dimen/resultTextSize"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="@dimen/resultTextSizeMin"
+        android:autoSizeMaxTextSize="@dimen/resultTextSizeMax"
+        android:autoSizeStepGranularity="@dimen/resultTextSizeStep"
 
         app:layout_constraintBottom_toTopOf="@+id/buttonsGrid"
         app:layout_constraintStart_toStartOf="parent"

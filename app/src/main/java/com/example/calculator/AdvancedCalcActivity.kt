@@ -1,23 +1,27 @@
 package com.example.calculator
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
-import android.os.SystemClock
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.notkamui.keval.Keval
 
 class AdvancedCalcActivity : AppCompatActivity() {
-    private var isDotExistInNumber: Boolean = false
-    private var isResultPressed: Boolean = false
-    private var isOperationLast: Boolean = false
-    private var isNegativeLastNumber: Boolean = false
-    private var startOfNumber: Int = 0
-    private lateinit var splitData: List<String>
-    private var openedBrackets = 0
-    var lastClickTime: Long = 0
+    private var isResultShown : Boolean = false
+    private lateinit var gestureDetectorDelete: GestureDetector
+    private val handlerDelete = Handler(Looper.getMainLooper())
+    private lateinit var gestureDetectorBrackets: GestureDetector
+    private val handlerBrackets = Handler(Looper.getMainLooper())
+    private var isDoubleClickDelete = false
+    private var isDoubleClickBrackets = false
+
+    private var activity : Activity = this
 
     private lateinit var buttonClear: Button
     private lateinit var buttonDelete: Button
@@ -52,73 +56,96 @@ class AdvancedCalcActivity : AppCompatActivity() {
 
     private lateinit var resultView: TextView
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.advanced_calculator)
         setLayoutObjects()
 
-        resultView.text = "0"
-        buttonZero.setOnClickListener { addSignToResultView("0") }
-        buttonOne.setOnClickListener { addSignToResultView("1") }
-        buttonTwo.setOnClickListener { addSignToResultView("2") }
-        buttonThree.setOnClickListener { addSignToResultView("3") }
-        buttonFour.setOnClickListener { addSignToResultView("4") }
-        buttonFive.setOnClickListener { addSignToResultView("5") }
-        buttonSix.setOnClickListener { addSignToResultView("6") }
-        buttonSeven.setOnClickListener { addSignToResultView("7") }
-        buttonEight.setOnClickListener { addSignToResultView("8") }
-        buttonNine.setOnClickListener { addSignToResultView("9") }
-        buttonAdd.setOnClickListener { addSignToResultView(" + ") }
-        buttonSubtract.setOnClickListener { addSignToResultView(" - ") }
-        buttonDivide.setOnClickListener { addSignToResultView(" / ") }
-        buttonMultiply.setOnClickListener { addSignToResultView(" * ") }
+        gestureDetectorDelete = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                isDoubleClickDelete = false
+                handlerDelete.postDelayed({
+                    if (!isDoubleClickDelete) {
+                        resultView.text = ExpressionOperations.dropLastElement()
+                    }
+                }, 150)
+                return true
+            }
+
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                isDoubleClickDelete = true
+                resultView.text = ExpressionOperations.deleteExpression()
+                return true
+            }
+        })
+
+        gestureDetectorBrackets = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                isDoubleClickBrackets = false
+                handlerBrackets.postDelayed({
+                    if (!isDoubleClickBrackets) {
+                        resultView.text = ExpressionOperations.addToExpression(activity, "(")
+                    }
+                }, 150)
+                return true
+            }
+
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                isDoubleClickBrackets = true
+                resultView.text = ExpressionOperations.addToExpression(activity, ")")
+                return true
+            }
+        })
+
+        resultView.text = ExpressionOperations.getExpression()
+
+        buttonZero.setOnClickListener { buttonAction("0") }
+        buttonOne.setOnClickListener { buttonAction("1") }
+        buttonTwo.setOnClickListener { buttonAction("2") }
+        buttonThree.setOnClickListener { buttonAction("3") }
+        buttonFour.setOnClickListener { buttonAction("4") }
+        buttonFive.setOnClickListener { buttonAction("5") }
+        buttonSix.setOnClickListener { buttonAction("6") }
+        buttonSeven.setOnClickListener { buttonAction("7") }
+        buttonEight.setOnClickListener { buttonAction("8") }
+        buttonNine.setOnClickListener { buttonAction("9") }
+        buttonAdd.setOnClickListener { buttonAction("+") }
+        buttonSubtract.setOnClickListener { buttonAction("-") }
+        buttonDivide.setOnClickListener { buttonAction("/") }
+        buttonMultiply.setOnClickListener { buttonAction("*") }
         buttonResult.setOnClickListener {
-            if (!isResultPressed && validateData()) resultView.text =
-                resultView.text.toString() + "\n= " + countResult()
-            isResultPressed = true
-        }
-        buttonDelete.setOnClickListener {
-            if (resultView.text.length == 1) resultView.text = "0"
-            else {
-                if (!isLastSignNumber()) resultView.text =
-                    resultView.text.substring(0, resultView.text.length - 3)
-                else resultView.text = resultView.text.substring(0, resultView.text.length - 1)
-            }
-        }
-        buttonClear.setOnClickListener { resultView.text = "0" }
-        buttonDot.setOnClickListener {
-            if (!isDotExistInNumber && isLastSignNumber()) {
-                addSignToResultView(".")
-            }
-        }
-        buttonSign.setOnClickListener {
-            if (isNegativeLastNumber) {
-                resultView.text =
-                    resultView.text.substring(0, startOfNumber) + resultView.text.substring(
-                        startOfNumber + 2,
-                        resultView.text.length
-                    )
-                isNegativeLastNumber = false
-            } else if (resultView.text.length - 1 != startOfNumber) {
-                isNegativeLastNumber = true
-                resultView.text =
-                    StringBuilder(resultView.text).insert(startOfNumber, "(-").toString()
+            ExpressionOperations.addMissingBrackets()
+            if(!isResultShown && ExpressionOperations.validateData(this)){
+                resultView.text = ExpressionOperations.calculateExpression()
+                isResultShown = true
             }
         }
 
-        setupDoubleClickListener(buttonBrackets)
+        buttonDelete.setOnTouchListener { _, event ->
+            gestureDetectorDelete.onTouchEvent(event)
+            true
+        }
+
+        buttonClear.setOnClickListener { resultView.text = ExpressionOperations.deleteExpression() }
+        buttonDot.setOnClickListener { buttonAction(".") }
+        buttonSign.setOnClickListener {buttonAction("-1") }
 
         buttonXY.setOnClickListener { resultView.text = resultView.text.toString() + "^" }
 
-        buttonX2.setOnClickListener { resultView.text = resultView.text.toString() + "^2" }
-        buttonSin.setOnClickListener { resultView.text = resultView.text.toString() + "sin(" }
-        buttonCos.setOnClickListener { resultView.text = resultView.text.toString() + "cos(" }
-        buttonTan.setOnClickListener { resultView.text = resultView.text.toString() + "tan(" }
-        buttonLn.setOnClickListener { resultView.text = resultView.text.toString() + "ln(" }
-        buttonLog.setOnClickListener { resultView.text = resultView.text.toString() + "log2(" }
-        buttonSqrt.setOnClickListener { resultView.text = resultView.text.toString() + "sqrt(" }
-        //buttonPercent.setOnClickListener { resultView.text = resultView.text.toString() + "sin(" }
+        buttonX2.setOnClickListener { buttonAction("^2") }
+        buttonSin.setOnClickListener { buttonAction("sin") }
+        buttonCos.setOnClickListener { buttonAction("cos") }
+        buttonTan.setOnClickListener { buttonAction("tan") }
+        buttonLn.setOnClickListener { buttonAction("ln") }
+        buttonLog.setOnClickListener { buttonAction("log2") }
+        buttonSqrt.setOnClickListener { buttonAction("sqrt") }
+        buttonPercent.setOnClickListener { buttonAction("%") }
+
+        buttonBrackets.setOnTouchListener { _, event ->
+            gestureDetectorBrackets.onTouchEvent(event)
+            true
+        }
     }
 
     private fun setLayoutObjects() {
@@ -155,72 +182,11 @@ class AdvancedCalcActivity : AppCompatActivity() {
         buttonPercent = findViewById(R.id.buttonPercent)
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun addSignToResultView(sign: String) {
-        if (isResultPressed) {
-            resultView.text = ""
-            isResultPressed = false
-        }
-        if (resultView.text.length <= 1 && resultView.text == "0" && (sign >= "0" && sign <= "9")) {
-            resultView.text = sign
-            return
-        }
-        if (sign >= "0" && sign <= "9") {
-            resultView.text = resultView.text.toString() + sign
-            isOperationLast = false
-        } else if (sign == "." && !isDotExistInNumber) {
-            isDotExistInNumber = true
-            resultView.text = resultView.text.toString() + sign
-        } else {
-            if (!isOperationLast) {
-                if (isNegativeLastNumber) resultView.text = resultView.text.toString() + ")"
-                isDotExistInNumber = false
-                resultView.text = resultView.text.toString() + sign
-                isOperationLast = true
-                startOfNumber = resultView.text.length - 1
-            }
-        }
-    }
+    fun buttonAction(element : String){
+        if(isResultShown) ExpressionOperations.deleteExpression()
 
-    private fun isLastSignNumber(): Boolean {
-        return ((resultView.text.last() in '0'..'9'))
-    }
+        isResultShown = false
 
-    private fun displayToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun validateData(): Boolean {
-        if (!isLastSignNumber() || resultView.text.last() == '.') {
-            displayToast("Obliczenia nie mogą kończyć się operacją bądz przecinkiem!!")
-            return false
-        }
-        splitData = resultView.text.split(" ")
-        for (i in splitData.indices) {
-            if (splitData[i] == "/" && splitData[i + 1].toDouble() == 0.0) {
-                displayToast("W obliczeniach znajduje się zabronione dzielenie przez 0!!")
-                return false
-            }
-        }
-        return true
-    }
-
-    private fun countResult(): String {
-        return Keval.eval(resultView.text.toString()).toString()
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun setupDoubleClickListener(button: Button) {
-        button.setOnClickListener {
-            val currentTime = SystemClock.elapsedRealtime()
-            var temp : String = resultView.text.toString()
-            if (currentTime - lastClickTime < 400) {
-                resultView.text = temp.substring(0, temp.length-1) + ")"
-            }
-            else{
-                resultView.text = "$temp("
-            }
-            lastClickTime = currentTime
-        }
+        resultView.text = ExpressionOperations.addToExpression(activity, element)
     }
 }

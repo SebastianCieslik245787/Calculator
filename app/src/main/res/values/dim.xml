@@ -5,7 +5,9 @@
     <dimen name="resultTextViewMargin">10dp</dimen>
     <dimen name="buttonMargin">3dp</dimen>
     <dimen name="buttonTextSize">24sp</dimen>
-    <dimen name="resultTextSize">35sp</dimen>
+    <dimen name="resultTextSizeMin">20sp</dimen>
+    <dimen name="resultTextSizeMax">35sp</dimen>
+    <dimen name="resultTextSizeStep">2sp</dimen>
     <dimen name="buttonMainLayoutMargin">10dp</dimen>
     <dimen name="buttonMainLayoutTextSize">18sp</dimen>
     <dimen name="buttonAdvancedCalcTextSize">18sp</dimen>

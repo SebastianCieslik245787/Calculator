@@ -15,6 +15,7 @@ class ExpressionOperations {
         private var indexOfNumberStart: Int = 0
         private var isNumberNegative: Boolean = false
         private var expression: String = "0"
+        private var openBrackets : Int = 0
 
         fun addToExpression(activity: Activity, element: String): String {
             if (element >= "0" && element <= "9") {
@@ -89,6 +90,94 @@ class ExpressionOperations {
 
                 doesDotExistInLastNumber = true
                 isLastDot = true
+            }
+
+            else if(element == "sin" || element == "cos" || element == "tan" || element == "ln" || element == "log2" || element == "sqrt"){
+                if(isLastDot) expression += "0"
+
+                if(isLastZero) expression = expression.substring(0, expression.length-1)
+
+                expression += "$element("
+
+                isLastDot = false
+                isLastOperation = false
+                isLastZero = false
+                isLastNumber = false
+                isNumberNegative = false
+
+                openBrackets++
+            }
+
+            else if(element == "^"){
+                if(isLastOperation){
+                    displayToast(activity, "Potęgować można jedynie liczbe bądz wyrażenie!")
+
+                    return expression
+                }
+
+                if(isLastDot) expression += "0"
+
+                if(isNumberNegative) expression += ")"
+
+                expression += "^"
+
+                isLastOperation = false
+                isLastDot = false
+                isLastZero = false
+                isNumberNegative = false
+                isLastNumber = false
+            }
+
+            else if(element == "^2"){
+                if(isLastOperation){
+                    displayToast(activity, "Potęgować można jedynie liczbe bądz wyrażenie!")
+
+                    return expression
+                }
+
+                if(isLastDot) expression += "0"
+
+                if(isNumberNegative) expression += ")"
+
+                expression += "^2"
+                //TODO co jeżeli wpiszemy liczbe lub operacje po?
+                isLastOperation = false
+                isLastDot = false
+                isLastZero = false
+                isNumberNegative = false
+                isLastNumber = false
+            }
+
+            else if(element == "("){
+                expression += "("
+                openBrackets++
+            }
+
+            else if(element == ")"){
+                if(openBrackets == 0){
+                    displayToast(activity, "Nie ma żadnego otwartego nawiasu!")
+
+                    return expression
+                }
+
+                expression += ")"
+                openBrackets--
+            }
+
+            else if(element == "%"){
+                if(isLastOperation){
+                    displayToast(activity, "Nie można obliczyć procętów bezpośrednio po operacji!")
+
+                    return expression
+                }
+
+                if(isLastDot) expression += "0"
+
+                if(isNumberNegative) expression += ")"
+                
+
+                expression += "%"
+                openBrackets--
             }
 
             return expression
@@ -206,6 +295,10 @@ class ExpressionOperations {
             var result = Keval.eval(expression).toString()
             expression += "\n= $result"
             return expression
+        }
+
+        fun addMissingBrackets(){
+            for (i in 0 ..<openBrackets)expression += ")"
         }
     }
 }
