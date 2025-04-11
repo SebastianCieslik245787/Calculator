@@ -1,12 +1,8 @@
 package com.example.calculator
 
 import android.app.Activity
-import android.util.Log
-import android.view.Display
 import android.widget.Toast
 import com.notkamui.keval.Keval
-import com.notkamui.keval.KevalInvalidArgumentException
-import com.notkamui.keval.KevalInvalidExpressionException
 import com.notkamui.keval.KevalZeroDivisionException
 
 class ExpressionOperations {
@@ -247,6 +243,10 @@ class ExpressionOperations {
                         expression = expression.dropLast(1)
                         openBrackets++
                     }
+                    else if(expression[expression.length - 2] == '(') {
+                        expression = expression.dropLast(1)
+                        openBrackets--
+                    }
                     else expression = expression.dropLast(3)
                 }
                 else{
@@ -254,6 +254,10 @@ class ExpressionOperations {
                     if(expression[expression.length - 2] == ')') {
                         expression = expression.dropLast(1)
                         openBrackets++
+                    }
+                    else if(expression[expression.length - 2] == '(') {
+                        expression = expression.dropLast(1)
+                        openBrackets--
                     }
                     else expression = expression.dropLast(3)
                 }
@@ -367,7 +371,7 @@ class ExpressionOperations {
 
         fun replacePercent(index : Int){
             var lastIndex : Int = index
-            var percentFound : Boolean = false
+            var percentFound = false
             for(i in lastIndex..expression.length-1){
                 if(expression[i] == '%'){
                     expression = expression.substring(0,i) + "* 0.01" + expression.substring(i+1, expression.length)
@@ -380,10 +384,10 @@ class ExpressionOperations {
         }
 
         fun addMissingBrackets(){
-            for (i in 0 ..<openBrackets){
+            repeat(openBrackets) {
                 expression += ")"
-                openBrackets--
             }
+            openBrackets = 0
         }
     }
 }
