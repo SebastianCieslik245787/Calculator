@@ -15,8 +15,4 @@
     <style name="buttonResultAdvancedCalc" parent="buttonAdvancedCalc">
         <item name="android:backgroundTint">@color/buttonResultColor</item>
     </style>
-
-    <style name="buttonOperationSmallerTextSize" parent="buttonOperatorAdvancedCalc">
-        <item name="android:textSize">@dimen/buttonAdvancedCalcSmallerTextSize</item>
-    </style>
 </resources>

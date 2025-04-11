@@ -94,10 +94,9 @@ class EasyCalcActivity : AppCompatActivity() {
         buttonMultiply.setOnClickListener { buttonAction("*") }
 
         buttonResult.setOnClickListener {
-
-            if(!isResultShown && ExpressionOperations.validateData(this)){
-
-                resultView.text = ExpressionOperations.calculateExpression()
+            ExpressionOperations.addMissingBrackets()
+            if(ExpressionOperations.calculateExpression(this)){
+                resultView.text = ExpressionOperations.getExpression()
                 isResultShown = true
             }
         }

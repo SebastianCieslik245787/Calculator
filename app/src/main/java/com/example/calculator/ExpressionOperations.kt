@@ -1,8 +1,13 @@
 package com.example.calculator
 
 import android.app.Activity
+import android.util.Log
+import android.view.Display
 import android.widget.Toast
 import com.notkamui.keval.Keval
+import com.notkamui.keval.KevalInvalidArgumentException
+import com.notkamui.keval.KevalInvalidExpressionException
+import com.notkamui.keval.KevalZeroDivisionException
 
 class ExpressionOperations {
 
@@ -12,6 +17,7 @@ class ExpressionOperations {
         private var isLastOperation: Boolean = false
         private var isLastZero: Boolean = true
         private var isLastNumber: Boolean = true
+        private var canBeNumberNext : Boolean = true
         private var indexOfNumberStart: Int = 0
         private var isNumberNegative: Boolean = false
         private var expression: String = "0"
@@ -25,14 +31,26 @@ class ExpressionOperations {
                     if (element == "0") return expression
 
                     expression = expression.substring(0, expression.length - 1) + element
+
+                    isLastOperation = false
+                    isLastZero = false
+                    isLastNumber = true
+                    isLastDot = false
+                    canBeNumberNext = true
+
+                    return expression
                 }
+                if(!canBeNumberNext){
+                    displayToast(activity, "Nie można wstawić liczby po ^2, % oraz )")
 
+                    return expression
+                }
                 else expression += element
-
                 isLastOperation = false
                 isLastZero = false
                 isLastNumber = true
                 isLastDot = false
+                canBeNumberNext = true
             }
 
             else if (element == "+" || element == "-" || element == "/" || element == "*") {
@@ -46,6 +64,7 @@ class ExpressionOperations {
 
                 if (isNumberNegative) {
                     expression += ")"
+                    openBrackets--
                     isNumberNegative = false
                 }
 
@@ -56,21 +75,28 @@ class ExpressionOperations {
                 isLastZero = false
                 isLastNumber = false
                 doesDotExistInLastNumber = false
+                canBeNumberNext = true
                 indexOfNumberStart = expression.length
             }
 
             else if (element == "-1") {
 
-                if (!isLastNumber){
+                if (!isLastNumber && expression[expression.length - 1] != ')'){
                     displayToast(activity, "Możliość zmiany znaku wyłącznie po wprowadzeniu liczby!")
 
                     return expression
                 }
-
+                if(expression[expression.length - 1] == ')'){
+                    isLastNumber = true
+                    openBrackets++
+                    expression = expression.dropLast(1)
+                }
                 expression = if (isNumberNegative) expression.substring(0, indexOfNumberStart) + expression.substring(indexOfNumberStart + 2, expression.length)
                 else expression.substring(0, indexOfNumberStart) + "(-" + expression.substring(indexOfNumberStart, expression.length)
-
+                canBeNumberNext = true
                 isNumberNegative = !isNumberNegative
+                if(isNumberNegative) openBrackets++
+                else openBrackets--
             }
 
             else if (element == ".") {
@@ -87,7 +113,7 @@ class ExpressionOperations {
                 }
 
                 expression += "."
-
+                canBeNumberNext = true
                 doesDotExistInLastNumber = true
                 isLastDot = true
             }
@@ -100,11 +126,12 @@ class ExpressionOperations {
                 expression += "$element("
 
                 isLastDot = false
-                isLastOperation = false
+                isLastOperation = true
                 isLastZero = false
                 isLastNumber = false
                 isNumberNegative = false
-
+                canBeNumberNext = true
+                indexOfNumberStart = expression.length
                 openBrackets++
             }
 
@@ -121,11 +148,13 @@ class ExpressionOperations {
 
                 expression += "^"
 
-                isLastOperation = false
+                isLastOperation = true
                 isLastDot = false
                 isLastZero = false
                 isNumberNegative = false
                 isLastNumber = false
+                canBeNumberNext = true
+                indexOfNumberStart = expression.length
             }
 
             else if(element == "^2"){
@@ -140,16 +169,26 @@ class ExpressionOperations {
                 if(isNumberNegative) expression += ")"
 
                 expression += "^2"
-                //TODO co jeżeli wpiszemy liczbe lub operacje po?
                 isLastOperation = false
                 isLastDot = false
                 isLastZero = false
                 isNumberNegative = false
+                canBeNumberNext = false
                 isLastNumber = false
             }
 
             else if(element == "("){
+                if(isLastZero){
+                    expression = ""
+                }
+                isLastZero = false
+                isLastNumber = false
+                isLastDot = false
+                isNumberNegative = false
+                isLastOperation = true
                 expression += "("
+                canBeNumberNext = true
+                indexOfNumberStart = expression.length
                 openBrackets++
             }
 
@@ -160,7 +199,11 @@ class ExpressionOperations {
                     return expression
                 }
 
+                isLastZero = false
+                isLastNumber = false
+                isLastDot = false
                 expression += ")"
+                canBeNumberNext = false
                 openBrackets--
             }
 
@@ -174,9 +217,13 @@ class ExpressionOperations {
                 if(isLastDot) expression += "0"
 
                 if(isNumberNegative) expression += ")"
-                
 
+                isLastZero = false
+                isLastNumber = false
+                isLastDot = false
+                isLastOperation = false
                 expression += "%"
+                canBeNumberNext = false
                 openBrackets--
             }
 
@@ -191,9 +238,31 @@ class ExpressionOperations {
 
         fun dropLastElement() : String{
             if(isLastOperation){
+                if(expression.length > 3){
+                    var lastFourSigns = expression.substring(expression.length-4, expression.length)
+                    if(lastFourSigns == "sin(" || lastFourSigns == "cos(" || lastFourSigns == "tan(") expression = expression.dropLast(4)
+                    else if(lastFourSigns == "qrt(" || lastFourSigns == "og2(") expression = expression.dropLast(5)
+                    else if(expression[expression.length - 2] == '^') expression =expression.dropLast(1)
+                    else if(expression[expression.length - 2] == ')') {
+                        expression = expression.dropLast(1)
+                        openBrackets++
+                    }
+                    else expression = expression.dropLast(3)
+                }
+                else{
+                    if(expression[expression.length - 2] == '^') expression =expression.dropLast(1)
+                    if(expression[expression.length - 2] == ')') {
+                        expression = expression.dropLast(1)
+                        openBrackets++
+                    }
+                    else expression = expression.dropLast(3)
+                }
                 indexOfNumberStart = 0
-                expression = expression.dropLast(3)
                 for(i in expression.length-1 downTo 0){
+                    if(expression[i] == '(' && !isNumberNegative){
+                        indexOfNumberStart = i
+                        break
+                    }
                     if(expression[i] == '-') isNumberNegative = true
                     if(expression[i] == '.') doesDotExistInLastNumber = true
                     if(expression[i] == ' '){
@@ -202,7 +271,8 @@ class ExpressionOperations {
                     }
                 }
 
-                if(isNumberNegative) expression = expression.dropLast(1)
+                if(isNumberNegative && expression[expression.length-1] == ')') expression = expression.dropLast(1)
+
             }
             else expression = expression.dropLast(1)
 
@@ -264,41 +334,56 @@ class ExpressionOperations {
             isLastNumber = true
             indexOfNumberStart = 0
             isNumberNegative = false
+            canBeNumberNext = true
+            openBrackets = 0
 
             expression = "0"
 
             return expression
         }
 
-        fun validateData(activity: Activity) : Boolean{
-            var listOfElements : List<String> = expression.split(" ")
-
-            for(i in 0..listOfElements.size-1){
-                if(listOfElements[i] == "/" && listOfElements[i + 1].toDouble() != 0.0){
-                    displayToast(activity, "W wyrażeniu znajduje sie dzielenie przez 0!")
+        fun calculateExpression(activity: Activity) : Boolean{
+            replacePercent(0)
+            if(isLastOperation){
+                displayToast(activity, "W wyrażeniu znajduje się niedokończona operacja!")
+                return false
+            }
+            var result: String = expression
+            try{
+                result = Keval.eval(expression).toString()
+                if(result == "NaN"){
+                    displayToast(activity, "W wyrażeniu znajduje się niedozwolony arguument funkcji logarytmicznych bądź trygonometrycznych!")
                     return false
                 }
+                expression += "\n= $result"
             }
-
-            if(isLastOperation) {
-                displayToast(activity, "Wyrażenie kończy się operacją!")
+            catch(_ : KevalZeroDivisionException){
+                displayToast(activity, "W wyrażeniu znajduje się dzielenie przez Zero!")
                 return false
             }
 
-            if(isLastDot) expression += "0"
-
-            if(isNumberNegative && expression[expression.length-1] != ')') expression += ")"
             return true
         }
 
-        fun calculateExpression() : String{
-            var result = Keval.eval(expression).toString()
-            expression += "\n= $result"
-            return expression
+        fun replacePercent(index : Int){
+            var lastIndex : Int = index
+            var percentFound : Boolean = false
+            for(i in lastIndex..expression.length-1){
+                if(expression[i] == '%'){
+                    expression = expression.substring(0,i) + "* 0.01" + expression.substring(i+1, expression.length)
+                    lastIndex = i
+                    percentFound = true
+                    break
+                }
+            }
+            if(percentFound) replacePercent(lastIndex)
         }
 
         fun addMissingBrackets(){
-            for (i in 0 ..<openBrackets)expression += ")"
+            for (i in 0 ..<openBrackets){
+                expression += ")"
+                openBrackets--
+            }
         }
     }
 }

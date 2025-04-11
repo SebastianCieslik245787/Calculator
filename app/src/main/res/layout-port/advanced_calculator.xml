@@ -41,21 +41,21 @@
 
         <Button
             android:id="@+id/buttonSin"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="1"
             android:layout_column="0"
             android:text="@string/sin" />
 
         <Button
             android:id="@+id/buttonCos"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="1"
             android:layout_column="1"
             android:text="@string/cos" />
 
         <Button
             android:id="@+id/buttonTan"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="1"
             android:layout_column="2"
             android:text="@string/tan" />
@@ -69,28 +69,28 @@
 
         <Button
             android:id="@+id/buttonXY"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="0"
             android:layout_column="3"
             android:text="@string/xy" />
 
         <Button
             android:id="@+id/buttonX2"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="0"
             android:layout_column="4"
             android:text="@string/x2" />
 
         <Button
             android:id="@+id/buttonLog"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="1"
             android:layout_column="4"
             android:text="@string/log" />
 
         <Button
             android:id="@+id/buttonLn"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="1"
             android:layout_column="3"
             android:text="@string/ln" />
@@ -111,7 +111,7 @@
 
         <Button
             android:id="@+id/buttonClearAC"
-            style="@style/buttonOperationSmallerTextSize"
+            style="@style/buttonOperatorAdvancedCalc"
             android:layout_row="0"
             android:layout_column="0"
             android:text="@string/ac" />

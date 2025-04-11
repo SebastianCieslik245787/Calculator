@@ -116,8 +116,8 @@ class AdvancedCalcActivity : AppCompatActivity() {
         buttonMultiply.setOnClickListener { buttonAction("*") }
         buttonResult.setOnClickListener {
             ExpressionOperations.addMissingBrackets()
-            if(!isResultShown && ExpressionOperations.validateData(this)){
-                resultView.text = ExpressionOperations.calculateExpression()
+            if(ExpressionOperations.calculateExpression(activity)){
+                resultView.text = ExpressionOperations.getExpression()
                 isResultShown = true
             }
         }
@@ -131,7 +131,7 @@ class AdvancedCalcActivity : AppCompatActivity() {
         buttonDot.setOnClickListener { buttonAction(".") }
         buttonSign.setOnClickListener {buttonAction("-1") }
 
-        buttonXY.setOnClickListener { resultView.text = resultView.text.toString() + "^" }
+        buttonXY.setOnClickListener { buttonAction("^") }
 
         buttonX2.setOnClickListener { buttonAction("^2") }
         buttonSin.setOnClickListener { buttonAction("sin") }
