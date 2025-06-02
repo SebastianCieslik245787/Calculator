@@ -19,6 +19,8 @@
         android:autoSizeMinTextSize="@dimen/resultTextSizeMin"
         android:autoSizeMaxTextSize="@dimen/resultTextSizeMax"
         android:autoSizeStepGranularity="@dimen/resultTextSizeStep"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
 
         app:layout_constraintBottom_toTopOf="@+id/buttonsGrid"
         app:layout_constraintEnd_toEndOf="parent"

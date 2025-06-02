@@ -5,7 +5,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.text.method.ScrollingMovementMethod
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Button
@@ -169,6 +169,7 @@ class AdvancedCalcActivity : AppCompatActivity() {
         buttonDot = findViewById(R.id.buttonDotAC)
         buttonSign = findViewById(R.id.buttonSignAC)
         resultView = findViewById(R.id.resultFieldAC)
+        resultView.movementMethod = ScrollingMovementMethod.getInstance()
 
         buttonBrackets = findViewById(R.id.buttonBrackets)
         buttonXY = findViewById(R.id.buttonXY)
@@ -183,7 +184,7 @@ class AdvancedCalcActivity : AppCompatActivity() {
     }
 
     fun buttonAction(element : String){
-        if(isResultShown) ExpressionOperations.deleteExpression()
+        if(isResultShown) ExpressionOperations.setExpressionAsResult()
 
         isResultShown = false
 

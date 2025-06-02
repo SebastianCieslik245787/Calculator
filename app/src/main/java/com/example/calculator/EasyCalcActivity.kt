@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.method.ScrollingMovementMethod
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Button
@@ -49,9 +50,7 @@ class EasyCalcActivity : AppCompatActivity() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 isDoubleClick = false
                 handler.postDelayed({
-                    if (!isDoubleClick) {
-                        resultView.text = ExpressionOperations.dropLastElement()
-                    }
+                    if (!isDoubleClick) resultView.text = ExpressionOperations.dropLastElement()
                 }, 150)
                 return true
             }
@@ -135,11 +134,14 @@ class EasyCalcActivity : AppCompatActivity() {
         buttonDot = findViewById(R.id.buttonDot)
         buttonSign = findViewById(R.id.buttonSign)
         resultView = findViewById(R.id.resultField)
+        resultView.movementMethod = ScrollingMovementMethod.getInstance()
 
     }
 
     fun buttonAction(element : String){
-        if(isResultShown) ExpressionOperations.deleteExpression()
+        if(isResultShown){
+            ExpressionOperations.setExpressionAsResult()
+        }
 
         isResultShown = false
 

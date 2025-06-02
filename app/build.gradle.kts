@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.calculator"
-        minSdk = 26
+        minSdk = 27
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"

@@ -18,6 +18,7 @@ class ExpressionOperations {
         private var isNumberNegative: Boolean = false
         private var expression: String = "0"
         private var openBrackets : Int = 0
+        private var res : String = ""
 
         fun addToExpression(activity: Activity, element: String): String {
             if (element >= "0" && element <= "9") {
@@ -354,7 +355,8 @@ class ExpressionOperations {
             }
             var result: String = expression
             try{
-                result = Keval.eval(expression).toString()
+                result = Keval.eval(expression).toBigDecimal().toPlainString()
+                res = result
                 if(result == "NaN"){
                     displayToast(activity, "W wyrażeniu znajduje się niedozwolony arguument funkcji logarytmicznych bądź trygonometrycznych!")
                     return false
@@ -388,6 +390,23 @@ class ExpressionOperations {
                 expression += ")"
             }
             openBrackets = 0
+        }
+
+        fun setExpressionAsResult() : String{
+            expression = res
+
+            doesDotExistInLastNumber = true
+            isLastDot = false
+            isLastOperation = false
+            if(expression == "0") isLastZero = true
+            else isLastZero = false
+            isLastNumber = true
+            indexOfNumberStart = 0
+            isNumberNegative = false
+            canBeNumberNext = true
+            openBrackets = 0
+
+            return expression
         }
     }
 }
