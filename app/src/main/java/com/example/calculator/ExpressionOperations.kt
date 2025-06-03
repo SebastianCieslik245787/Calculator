@@ -83,7 +83,7 @@ class ExpressionOperations {
 
                     return expression
                 }
-                if(expression[expression.length - 1] == ')'){
+                if(expression[expression.length - 1] == ')' && !isNumberNegative){
                     isLastNumber = true
                     openBrackets++
                     expression = expression.dropLast(1)

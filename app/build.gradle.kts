@@ -36,13 +36,26 @@ android {
 }
 
 dependencies {
+    // Espresso Core
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // JUnit rozszerzenie do testów instrumentacyjnych
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+
+    // Opcjonalnie - testowanie fragmentów
+    androidTestImplementation("androidx.fragment:fragment-testing:1.6.2")
+
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+
+    // Twoje biblioteki aplikacji
     implementation("com.notkamui.libs:keval:1.1.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    // Testy jednostkowe
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
